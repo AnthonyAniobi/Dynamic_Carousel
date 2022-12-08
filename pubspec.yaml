@@ -1,10 +1,10 @@
-name: carousel_swiper
-description: A new Flutter package project.
+name: dynamic_carousel
+description: An animated carousel swiper supporting adding and removing of items.
 version: 0.0.1
-homepage:
+homepage: https://github.com/AnthonyAniobi/Dynamic_Carousel
 
 environment:
-  sdk: '>=2.18.4 <3.0.0'
+  sdk: '>=2.18.0 <3.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
