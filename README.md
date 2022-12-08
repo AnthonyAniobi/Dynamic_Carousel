@@ -1,3 +1,7 @@
+<!-- [![pub package version](https://img.shields.io/pub/v/date_format_field)](https://pub.dev/packages/date_format_field) -->
+[![license](https://img.shields.io/github/license/AnthonyAniobi/Date_Format_Field)](https://github.com/AnthonyAniobi/Dynamic_Carousel)
+[![issues](https://img.shields.io/github/issues/AnthonyAniobi/Date_Format_Field)](https://github.com/AnthonyAniobi/Dynamic_Carousel)
+
 Dynamic Carousel is a flutter package that implements a manual swiping carousel. The carousel allows deletion and adding images with a custom slider which displays and hides based on input.
 
 
