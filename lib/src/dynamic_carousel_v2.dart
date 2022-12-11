@@ -1,4 +1,6 @@
+import 'package:dynamic_carousel/src/carousel_item_widget.dart';
 import 'package:dynamic_carousel/src/enums.dart';
+import 'package:dynamic_carousel/src/models.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 
@@ -17,7 +19,7 @@ class _DynamicCarouselState extends State<DynamicCarousel>
   double? bigItemWidth = 200;
   double? smallItemHeight = 100;
   double? smallItemWidth = 100;
-  int activePage = 1;
+  int activePage = 0;
   Duration animationDuration = const Duration(milliseconds: 250);
 
   //late initializations
@@ -29,15 +31,23 @@ class _DynamicCarouselState extends State<DynamicCarousel>
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(vsync: this, duration: animationDuration);
+    controller = AnimationController(vsync: this, duration: animationDuration)
+      ..addListener(() {
+        setState(() {});
+      })
+      ..addStatusListener((status) {});
     intAnimation = IntTween(begin: 0, end: 1).animate(controller);
     containerHeight =
         Tween(begin: bigItemHeight, end: smallItemHeight).animate(controller);
     containerWidth =
         Tween(begin: smallItemWidth, end: smallItemWidth).animate(controller);
-    controller.addListener(() {
-      if (controller.value > 0.5) setState(() {});
-    });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+
+    super.dispose();
   }
 
   List<Widget> carouselItems = [
@@ -55,6 +65,11 @@ class _DynamicCarouselState extends State<DynamicCarousel>
       width: double.maxFinite,
       height: double.maxFinite,
       color: Colors.blue,
+    ),
+    Container(
+      width: double.maxFinite,
+      height: double.maxFinite,
+      color: Colors.red,
     )
   ];
 
@@ -80,77 +95,59 @@ class _DynamicCarouselState extends State<DynamicCarousel>
   }
 
   List<Widget> stackItems() {
-    List<Map<PagePos, Widget>> beforeActive = carouselItems
-        .sublist(0, activePage)
-        .map((e) => {PagePos.before: e})
-        .toList();
-    List<Map<PagePos, Widget>> afterActive = carouselItems
-        .sublist(activePage + 1, carouselItems.length)
-        .map((e) => {PagePos.after: e})
-        .toList();
-    Map<PagePos, Widget> currentPage = {
-      PagePos.current: carouselItems[activePage]
-    };
-    // List<Map<PagePos, Widget>> currentItemList = [
-    //   ...beforeActive,
-    //   ...afterActive,
-    //   currentPage,
-    // ];
-    List<Map<PagePos, Widget>> currentItemList =
-        carouselItems.mapIndexed((index, element) {
-      PagePos pagePos;
-      if (index < activePage - 1) {
-        pagePos = PagePos.farBefore;
-      } else if (index == activePage - 1) {
-        pagePos = PagePos.before;
-      } else if (index == activePage) {
-        pagePos = PagePos.current;
-      } else if (index == activePage + 1) {
-        pagePos = PagePos.after;
-      } else {
-        pagePos = PagePos.farAfter;
-      }
-      return {pagePos: element};
-    }).toList();
+    List<CarouselData> currentItemList = updateList();
     return currentItemList.mapIndexed((index, item) {
-      PagePos currentPos = item.keys.first;
-      Widget currentItem = item.values.first;
-      return AnimatedAlign(
-        duration: animationDuration,
-        alignment: currentPos.isBefore
-            ? Alignment(0.75, 0)
-            : currentPos.isCurrent
-                ? Alignment(0, 0)
-                : currentPos.isAfter
-                    ? Alignment(-0.75, 0)
-                    : currentPos.isFarBefore
-                        ? Alignment(1, 0)
-                        : Alignment(-1, 0),
-        child: AnimatedContainer(
-          duration: animationDuration,
-          width: currentPos.isCurrent
-              ? bigItemWidth
-              : currentPos.isFar
-                  ? smallItemHeight! - 15
-                  : smallItemWidth,
-          height: currentPos.isCurrent
-              ? bigItemHeight
-              : currentPos.isFar
-                  ? smallItemWidth! - 15
-                  : smallItemHeight,
-          child: SizedBox(
-              width: currentPos.isCurrent ? null : smallItemWidth,
-              height: currentPos.isCurrent ? null : smallItemHeight,
-              child: currentItem),
-        ),
+      PagePos currentPos = item.currentPos;
+      PagePos prevPos = item.previousPos;
+      Widget currentItem = item.item;
+
+      return CarouselItemWidget(
+        currentPos: currentPos,
+        previousPos: prevPos,
+        bigItemWidth: bigItemWidth!,
+        bigItemHeight: bigItemHeight!,
+        smallItemWidth: smallItemWidth!,
+        smallItemHeight: smallItemHeight!,
+        child: currentItem,
       );
     }).toList();
+  }
+
+  List<CarouselData> updateList() {
+    List<CarouselData> farBeforeActive;
+    List<CarouselData> farAfterActive;
+    CarouselData currentPage;
+    farBeforeActive = carouselItems
+        .sublist(0, activePage)
+        .map((e) => CarouselData(e, PagePos.farBefore, PagePos.farBefore))
+        .toList();
+    farAfterActive = carouselItems
+        .sublist(activePage + 1, carouselItems.length)
+        .map((e) => CarouselData(e, PagePos.farBefore, PagePos.farBefore))
+        .toList();
+    if (farAfterActive.isNotEmpty) {
+      farAfterActive.first.setCurrent(PagePos.before);
+      farAfterActive.first.setPrev(PagePos.current);
+    }
+    if (farBeforeActive.isNotEmpty) {
+      farBeforeActive.last.setCurrent(PagePos.after);
+      farBeforeActive.last.setPrev(PagePos.current);
+    }
+    currentPage = CarouselData(carouselItems[activePage], PagePos.current,
+        PagePos.before); // {PagePos.current: carouselItems[activePage]};
+
+    return [
+      ...farBeforeActive,
+      ...farAfterActive.reversed,
+      currentPage,
+    ];
   }
 
   void _rightSwipe() {
     setState(() {
       if (activePage < carouselItems.length - 1) {
         activePage += 1;
+        print('right');
       }
     });
   }
@@ -159,7 +156,7 @@ class _DynamicCarouselState extends State<DynamicCarousel>
     setState(() {
       if (activePage > 0) {
         activePage -= 1;
-        print(width);
+        print('left');
       }
     });
   }
