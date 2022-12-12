@@ -20,34 +20,12 @@ class _DynamicCarouselState extends State<DynamicCarousel>
   double? smallItemHeight = 100;
   double? smallItemWidth = 100;
   int activePage = 0;
-  Duration animationDuration = const Duration(milliseconds: 250);
+  bool updateStack = false;
+  List<CarouselData>? cache;
 
-  //late initializations
-  late AnimationController controller;
-  late Animation<int> intAnimation;
-  late Animation<double> containerHeight;
-  late Animation<double> containerWidth;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = AnimationController(vsync: this, duration: animationDuration)
-      ..addListener(() {
-        setState(() {});
-      })
-      ..addStatusListener((status) {});
-    intAnimation = IntTween(begin: 0, end: 1).animate(controller);
-    containerHeight =
-        Tween(begin: bigItemHeight, end: smallItemHeight).animate(controller);
-    containerWidth =
-        Tween(begin: smallItemWidth, end: smallItemWidth).animate(controller);
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-
-    super.dispose();
+  List<CarouselData> get stackData => cache!;
+  set stackData(List<CarouselData> data) {
+    cache = data;
   }
 
   List<Widget> carouselItems = [
@@ -74,13 +52,19 @@ class _DynamicCarouselState extends State<DynamicCarousel>
   ];
 
   @override
+  void initState() {
+    super.initState();
+    updateListOnly();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onHorizontalDragEnd: ((details) {
         if (details.velocity.pixelsPerSecond.dx > 0) {
-          _rightSwipe();
-        } else {
           _leftSwipe();
+        } else {
+          _rightSwipe();
         }
       }),
       child: Container(
@@ -95,68 +79,58 @@ class _DynamicCarouselState extends State<DynamicCarousel>
   }
 
   List<Widget> stackItems() {
-    List<CarouselData> currentItemList = updateList();
-    return currentItemList.mapIndexed((index, item) {
+    // List<CarouselData> currentItemList = updateListOnly();
+
+    return cache!.mapIndexed((index, item) {
       PagePos currentPos = item.currentPos;
-      PagePos prevPos = item.previousPos;
       Widget currentItem = item.item;
 
       return CarouselItemWidget(
         currentPos: currentPos,
-        previousPos: prevPos,
         bigItemWidth: bigItemWidth!,
         bigItemHeight: bigItemHeight!,
         smallItemWidth: smallItemWidth!,
         smallItemHeight: smallItemHeight!,
+        onEnd: () {},
         child: currentItem,
       );
     }).toList();
   }
 
-  List<CarouselData> updateList() {
-    List<CarouselData> farBeforeActive;
-    List<CarouselData> farAfterActive;
-    CarouselData currentPage;
-    farBeforeActive = carouselItems
-        .sublist(0, activePage)
-        .map((e) => CarouselData(e, PagePos.farBefore, PagePos.farBefore))
-        .toList();
-    farAfterActive = carouselItems
-        .sublist(activePage + 1, carouselItems.length)
-        .map((e) => CarouselData(e, PagePos.farBefore, PagePos.farBefore))
-        .toList();
-    if (farAfterActive.isNotEmpty) {
-      farAfterActive.first.setCurrent(PagePos.before);
-      farAfterActive.first.setPrev(PagePos.current);
-    }
-    if (farBeforeActive.isNotEmpty) {
-      farBeforeActive.last.setCurrent(PagePos.after);
-      farBeforeActive.last.setPrev(PagePos.current);
-    }
-    currentPage = CarouselData(carouselItems[activePage], PagePos.current,
-        PagePos.before); // {PagePos.current: carouselItems[activePage]};
-
-    return [
-      ...farBeforeActive,
-      ...farAfterActive.reversed,
-      currentPage,
-    ];
+  void updateListOnly() {
+    final result = carouselItems.mapIndexed((index, item) {
+      PagePos pos;
+      if (index < activePage - 1) {
+        pos = PagePos.farBefore;
+      } else if (index == activePage - 1) {
+        pos = PagePos.before;
+      } else if (index == activePage) {
+        pos = PagePos.current;
+      } else if (index == activePage + 1) {
+        pos = PagePos.after;
+      } else {
+        pos = PagePos.farAfter;
+      }
+      return CarouselData(item, pos, pos);
+    }).toList();
+    cache = result; // cache data;
+    // return result;
   }
 
   void _rightSwipe() {
     setState(() {
       if (activePage < carouselItems.length - 1) {
         activePage += 1;
-        print('right');
+        updateListOnly();
       }
     });
   }
 
-  void _leftSwipe() {
+  void _leftSwipe() async {
     setState(() {
       if (activePage > 0) {
         activePage -= 1;
-        print('left');
+        updateListOnly();
       }
     });
   }

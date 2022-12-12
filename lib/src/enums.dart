@@ -16,3 +16,9 @@ extension PositionHelper on PagePos {
 }
 
 enum SlideDirection { forward, backward, none }
+
+extension SlideDirectionHelper on SlideDirection {
+  bool get isForward => this == SlideDirection.forward;
+  bool get isBackward => this == SlideDirection.backward;
+  bool get isStatic => this == SlideDirection.none;
+}
