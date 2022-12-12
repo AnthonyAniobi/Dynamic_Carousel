@@ -13,6 +13,8 @@ class DynamicCarousel extends StatefulWidget {
     this.bigItemWidth = 200,
     this.smallItemHeight = 100,
     this.smallItemWidth = 100,
+    this.verticalAlignment = 0.7,
+    this.afterOffset = 32,
     required this.children,
   });
 
@@ -33,6 +35,12 @@ class DynamicCarousel extends StatefulWidget {
 
   /// width of the small carousel item
   final double smallItemWidth;
+
+  /// vertical alignment of the small carousel items
+  final double verticalAlignment;
+
+  /// after offset [remove this later]
+  final double afterOffset;
 
   /// list of widgets for the widget
   final List<Widget> children;
@@ -103,7 +111,8 @@ class _DynamicCarouselState extends State<DynamicCarousel>
         bigItemHeight: widget.bigItemHeight,
         smallItemWidth: widget.smallItemWidth,
         smallItemHeight: widget.smallItemHeight,
-        afterOffset: 32,
+        afterOffset: widget.afterOffset,
+        verticalOffset: widget.verticalAlignment,
         child: currentItem,
       );
     }).toList();

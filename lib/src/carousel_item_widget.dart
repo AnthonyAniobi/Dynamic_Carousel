@@ -9,6 +9,7 @@ class CarouselItemWidget extends StatelessWidget {
   final double bigItemHeight;
   final double smallItemWidth;
   final double smallItemHeight;
+  final double verticalOffset;
   final double afterOffset;
 
   const CarouselItemWidget({
@@ -21,6 +22,7 @@ class CarouselItemWidget extends StatelessWidget {
     required this.smallItemWidth,
     required this.smallItemHeight,
     required this.afterOffset,
+    required this.verticalOffset,
   });
 
   @override
@@ -41,10 +43,24 @@ class CarouselItemWidget extends StatelessWidget {
                       : null,
           width: _width(),
           height: _height(),
-          child: child,
+          decoration: currentPos.isCurrent ? _currentDecoration() : null,
+          child: Stack(
+            children: [
+              child,
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  BoxDecoration _currentDecoration() {
+    return BoxDecoration(boxShadow: [
+      BoxShadow(
+          offset: const Offset(0, 1),
+          blurRadius: 4,
+          color: Colors.black.withOpacity(0.25))
+    ]);
   }
 
   double hAShift() {
@@ -80,17 +96,17 @@ class CarouselItemWidget extends StatelessWidget {
 
   Alignment _alignment() {
     if (currentPos.isFarBefore) {
-      return const Alignment(-1, 0);
+      return Alignment(-1, -1 + (2 * verticalOffset));
     } else if (currentPos.isBefore) {
-      return const Alignment(-0.75, 0);
+      return Alignment(-0.75, -1 + (2 * verticalOffset));
     } else if (currentPos.isCurrent) {
-      return const Alignment(0, 0);
+      return Alignment(0, -1 + (2 * verticalOffset));
     } else if (currentPos.isAfter) {
-      return const Alignment(0.75, 0);
+      return Alignment(0.75, -1 + (2 * verticalOffset));
     } else if (currentPos.isFarAfter) {
-      return const Alignment(1, 0);
+      return Alignment(1, -1 + (2 * verticalOffset));
     } else {
-      return const Alignment(2, 0);
+      return Alignment(2, -1 + (2 * verticalOffset));
     }
   }
 

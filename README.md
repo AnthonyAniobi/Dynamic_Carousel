@@ -9,6 +9,7 @@ Dynamic Carousel is a flutter package that implements a manual swiping carousel.
 <img src='screenshots/aim.png' width='400' height='300'>
 
 ## Features
+<img src='screenshots/screen_preview.gif' width='300' height='500'>
 
 TODO: List what your package can do. Maybe include images, gifs, or videos.
 
