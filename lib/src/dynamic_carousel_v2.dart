@@ -5,7 +5,37 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 
 class DynamicCarousel extends StatefulWidget {
-  const DynamicCarousel({super.key});
+  const DynamicCarousel({
+    super.key,
+    this.width = 500,
+    this.height = 200,
+    this.bigItemHeight = 200,
+    this.bigItemWidth = 200,
+    this.smallItemHeight = 100,
+    this.smallItemWidth = 100,
+    required this.children,
+  });
+
+  /// total width of the carousel
+  final double width;
+
+  /// overall height of the carousel
+  final double height;
+
+  /// height of the expanded carousel item
+  final double bigItemHeight;
+
+  /// width of the expanded carousel item
+  final double bigItemWidth;
+
+  /// height of the small carousel item
+  final double smallItemHeight;
+
+  /// width of the small carousel item
+  final double smallItemWidth;
+
+  /// list of widgets for the widget
+  final List<Widget> children;
 
   @override
   State<DynamicCarousel> createState() => _DynamicCarouselState();
@@ -13,48 +43,12 @@ class DynamicCarousel extends StatefulWidget {
 
 class _DynamicCarouselState extends State<DynamicCarousel>
     with SingleTickerProviderStateMixin {
-  double? width = 500;
-  double? height = 200;
-  double? bigItemHeight = 200;
-  double? bigItemWidth = 200;
-  double? smallItemHeight = 100;
-  double? smallItemWidth = 100;
   int activePage = 0;
   bool updateStack = false;
-  List<CarouselData>? cache;
-
-  List<CarouselData> get stackData => cache!;
-  set stackData(List<CarouselData> data) {
-    cache = data;
-  }
-
-  List<Widget> carouselItems = [
-    Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      color: Colors.yellow,
-    ),
-    Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      color: Colors.green,
-    ),
-    Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      color: Colors.blue,
-    ),
-    Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      color: Colors.red,
-    )
-  ];
 
   @override
   void initState() {
     super.initState();
-    updateListOnly();
   }
 
   @override
@@ -68,8 +62,8 @@ class _DynamicCarouselState extends State<DynamicCarousel>
         }
       }),
       child: Container(
-        width: width,
-        height: height,
+        width: widget.width,
+        height: widget.height,
         color: Colors.grey,
         child: Stack(
           children: stackItems(),
@@ -80,26 +74,7 @@ class _DynamicCarouselState extends State<DynamicCarousel>
 
   List<Widget> stackItems() {
     // List<CarouselData> currentItemList = updateListOnly();
-
-    return cache!.mapIndexed((index, item) {
-      PagePos currentPos = item.currentPos;
-      Widget currentItem = item.item;
-
-      return CarouselItemWidget(
-        currentPos: currentPos,
-        stackWidth: width!,
-        bigItemWidth: bigItemWidth!,
-        bigItemHeight: bigItemHeight!,
-        smallItemWidth: smallItemWidth!,
-        smallItemHeight: smallItemHeight!,
-        onEnd: () {},
-        child: currentItem,
-      );
-    }).toList();
-  }
-
-  void updateListOnly() {
-    final result = carouselItems.mapIndexed((index, item) {
+    final result = widget.children.mapIndexed((index, item) {
       PagePos pos;
       if (index < activePage - 1) {
         pos = PagePos.farBefore;
@@ -109,20 +84,35 @@ class _DynamicCarouselState extends State<DynamicCarousel>
         pos = PagePos.current;
       } else if (index == activePage + 1) {
         pos = PagePos.after;
-      } else {
+      } else if (index == activePage + 2) {
         pos = PagePos.farAfter;
+      } else {
+        pos = PagePos.farFarAfter;
       }
       return CarouselData(item, pos, pos);
     }).toList();
-    cache = result; // cache data;
-    // return result;
+
+    return result.mapIndexed((index, item) {
+      PagePos currentPos = item.currentPos;
+      Widget currentItem = item.item;
+
+      return CarouselItemWidget(
+        currentPos: currentPos,
+        stackWidth: widget.width,
+        bigItemWidth: widget.bigItemWidth,
+        bigItemHeight: widget.bigItemHeight,
+        smallItemWidth: widget.smallItemWidth,
+        smallItemHeight: widget.smallItemHeight,
+        afterOffset: 32,
+        child: currentItem,
+      );
+    }).toList();
   }
 
   void _rightSwipe() {
     setState(() {
-      if (activePage < carouselItems.length - 1) {
+      if (activePage < widget.children.length - 1) {
         activePage += 1;
-        updateListOnly();
       }
     });
   }
@@ -131,7 +121,6 @@ class _DynamicCarouselState extends State<DynamicCarousel>
     setState(() {
       if (activePage > 0) {
         activePage -= 1;
-        updateListOnly();
       }
     });
   }

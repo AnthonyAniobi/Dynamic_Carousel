@@ -4,6 +4,7 @@ enum PagePos {
   current,
   farBefore,
   farAfter,
+  farFarAfter,
 }
 
 extension PositionHelper on PagePos {
@@ -12,6 +13,7 @@ extension PositionHelper on PagePos {
   bool get isCurrent => this == PagePos.current;
   bool get isFarBefore => this == PagePos.farBefore;
   bool get isFarAfter => this == PagePos.farAfter;
+  bool get isFarFarAfter => this == PagePos.farFarAfter;
   bool get isFar => this == PagePos.farAfter || this == PagePos.farBefore;
 }
 

@@ -9,7 +9,7 @@ class CarouselItemWidget extends StatelessWidget {
   final double bigItemHeight;
   final double smallItemWidth;
   final double smallItemHeight;
-  final Function onEnd;
+  final double afterOffset;
 
   const CarouselItemWidget({
     super.key,
@@ -20,37 +20,45 @@ class CarouselItemWidget extends StatelessWidget {
     required this.bigItemHeight,
     required this.smallItemWidth,
     required this.smallItemHeight,
-    required this.onEnd,
+    required this.afterOffset,
   });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedAlign(
       duration: const Duration(milliseconds: 200),
-      onEnd: () {
-        onEnd();
-      },
       alignment: _alignment(),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        padding: currentPos.isAfter
-            ? EdgeInsets.only(left: hAShift())
-            : currentPos.isFarAfter
-                ? EdgeInsets.only(left: hFAShift())
-                : null,
-        width: _width(),
-        height: _height(),
-        child: child,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          padding: currentPos.isAfter
+              ? EdgeInsets.only(left: hAShift())
+              : currentPos.isFarAfter
+                  ? EdgeInsets.only(left: hFAShift())
+                  : currentPos.isFarFarAfter
+                      ? EdgeInsets.only(left: hFAShift())
+                      : null,
+          width: _width(),
+          height: _height(),
+          child: child,
+        ),
       ),
     );
   }
 
   double hAShift() {
-    double width = stackWidth / 2;
-    width = width * 0.73;
-    width = width - bigItemWidth / 2;
-    width = width - smallItemWidth / 2;
-    return width;
+    // double width = stackWidth / 2;
+    // width = width * 0.73;
+    // width = width - bigItemWidth / 2;
+    // width = width - smallItemWidth / 2;
+    // return width;
+
+    double width = stackWidth - bigItemWidth;
+    width = width * 0.125;
+    width = (2 * smallItemWidth) - width;
+    double width2 = stackWidth - bigItemWidth;
+    width2 = width2 / 2;
 
     // double width = stackWidth - bigItemWidth;
     // width = width * 0.125;
@@ -59,7 +67,8 @@ class CarouselItemWidget extends StatelessWidget {
     // print(width);
     // width = bigItemWidth / 2 + smallItemWidth + width;
     // width = stackWidth / 2 - width;
-    return 2;
+    return afterOffset;
+    // width2 - width;
   }
 
   double hFAShift() {
@@ -78,8 +87,10 @@ class CarouselItemWidget extends StatelessWidget {
       return const Alignment(0, 0);
     } else if (currentPos.isAfter) {
       return const Alignment(0.75, 0);
-    } else {
+    } else if (currentPos.isFarAfter) {
       return const Alignment(1, 0);
+    } else {
+      return const Alignment(2, 0);
     }
   }
 
