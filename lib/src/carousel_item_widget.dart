@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class CarouselItemWidget extends StatelessWidget {
   final PagePos currentPos;
   final Widget child;
+  final double stackWidth;
   final double bigItemWidth;
   final double bigItemHeight;
   final double smallItemWidth;
@@ -14,6 +15,7 @@ class CarouselItemWidget extends StatelessWidget {
     super.key,
     required this.currentPos,
     required this.child,
+    required this.stackWidth,
     required this.bigItemWidth,
     required this.bigItemHeight,
     required this.smallItemWidth,
@@ -24,7 +26,7 @@ class CarouselItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedAlign(
-      duration: const Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 200),
       onEnd: () {
         onEnd();
       },
@@ -32,31 +34,39 @@ class CarouselItemWidget extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         padding: currentPos.isAfter
-            ? EdgeInsets.only(left: hAShift(context))
+            ? EdgeInsets.only(left: hAShift())
             : currentPos.isFarAfter
-                ? EdgeInsets.only(left: hFAShift(context))
+                ? EdgeInsets.only(left: hFAShift())
                 : null,
         width: _width(),
         height: _height(),
-        child: Stack(
-          children: [
-            child,
-          ],
-        ),
+        child: child,
       ),
     );
   }
 
-  double hAShift(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double sideOffset = width * 0.1;
-    return ((bigItemWidth / 2) + smallItemWidth + sideOffset) - (width / 2);
+  double hAShift() {
+    double width = stackWidth / 2;
+    width = width * 0.73;
+    width = width - bigItemWidth / 2;
+    width = width - smallItemWidth / 2;
+    return width;
+
+    // double width = stackWidth - bigItemWidth;
+    // width = width * 0.125;
+    // width = smallItemWidth + bigItemWidth / 2 + width;
+    // stackWidth =
+    // print(width);
+    // width = bigItemWidth / 2 + smallItemWidth + width;
+    // width = stackWidth / 2 - width;
+    return 2;
   }
 
-  double hFAShift(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double sideOffset = width * 0.13;
-    return ((bigItemWidth / 2) + smallItemWidth + sideOffset) - (width / 2);
+  double hFAShift() {
+    double width = stackWidth - bigItemWidth;
+    width = width * 0.125;
+    width = smallItemHeight - width;
+    return width;
   }
 
   Alignment _alignment() {
@@ -115,7 +125,7 @@ class CarouselItemWidget extends StatelessWidget {
     if (currentPos.isCurrent) {
       return bigItemWidth;
     } else if (currentPos.isFar) {
-      return smallItemWidth - 15;
+      return smallItemWidth;
     } else {
       return smallItemWidth;
     }

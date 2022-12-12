@@ -87,6 +87,7 @@ class _DynamicCarouselState extends State<DynamicCarousel>
 
       return CarouselItemWidget(
         currentPos: currentPos,
+        stackWidth: width!,
         bigItemWidth: bigItemWidth!,
         bigItemHeight: bigItemHeight!,
         smallItemWidth: smallItemWidth!,
