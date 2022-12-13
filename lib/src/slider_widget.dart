@@ -28,9 +28,8 @@ class SliderWidget extends StatelessWidget {
             duration: const Duration(milliseconds: 200),
             alignment: Alignment(xPos, 0),
             child: Container(
-              // width: sliderLength,
+              width: sliderLength,
               height: 8,
-              padding: EdgeInsets.only(right: sliderLength),
               decoration: BoxDecoration(
                 color: Colors.orange,
                 borderRadius: BorderRadius.circular(4),
@@ -46,9 +45,10 @@ class SliderWidget extends StatelessWidget {
     if (position.isInfinite) {
       position = 0;
     }
-    print(position);
-    double freeLength =
-        (amount == 1 ? trackLength : trackLength - sliderLength);
+    double freeLength = trackLength - sliderLength;
+    if (freeLength <= 1) {
+      return 0;
+    }
     freeLength = (freeLength * position) / freeLength;
     return -0.9 + (2 * freeLength);
     // return 2;
