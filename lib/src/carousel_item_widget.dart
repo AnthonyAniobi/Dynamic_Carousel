@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 class CarouselItemWidget extends StatelessWidget {
   final PagePos currentPos;
   final Widget child;
+  final Widget? deleteIcon;
+  final Alignment? deleteAlign;
+  final Function? onDelete;
   final double stackWidth;
   final double bigItemWidth;
   final double bigItemHeight;
@@ -23,6 +26,9 @@ class CarouselItemWidget extends StatelessWidget {
     required this.smallItemHeight,
     required this.afterOffset,
     required this.verticalOffset,
+    this.deleteAlign,
+    this.deleteIcon,
+    this.onDelete,
   });
 
   @override
@@ -30,23 +36,49 @@ class CarouselItemWidget extends StatelessWidget {
     return AnimatedAlign(
       duration: const Duration(milliseconds: 200),
       alignment: _alignment(),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          padding: currentPos.isAfter
-              ? EdgeInsets.only(left: hAShift())
-              : currentPos.isFarAfter
-                  ? EdgeInsets.only(left: hFAShift())
-                  : currentPos.isFarFarAfter
-                      ? EdgeInsets.only(left: hFAShift())
-                      : null,
-          width: _width(),
-          height: _height(),
-          decoration: currentPos.isCurrent ? _currentDecoration() : null,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        padding: currentPos.isAfter
+            ? EdgeInsets.only(left: hAShift())
+            : currentPos.isFarAfter
+                ? EdgeInsets.only(left: hFAShift())
+                : currentPos.isFarFarAfter
+                    ? EdgeInsets.only(left: hFAShift())
+                    : null,
+        width: _width(),
+        height: _height(),
+        decoration: currentPos.isCurrent ? _currentDecoration() : null,
+        child: ClipRRect(
+          borderRadius: currentPos.isAfter || currentPos.isFarAfter
+              ? const BorderRadius.horizontal(right: Radius.circular(8))
+              : BorderRadius.circular(8),
           child: Stack(
             children: [
               child,
+              if (currentPos.isCurrent)
+                Align(
+                  alignment: deleteAlign ?? const Alignment(0.8, 0.8),
+                  child: InkWell(
+                    onTap: () {
+                      if (onDelete != null) {
+                        onDelete!();
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.orange,
+                      ),
+                      child: deleteIcon ??
+                          const Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                            size: 23,
+                          ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -57,9 +89,9 @@ class CarouselItemWidget extends StatelessWidget {
   BoxDecoration _currentDecoration() {
     return BoxDecoration(boxShadow: [
       BoxShadow(
-          offset: const Offset(0, 1),
+          offset: const Offset(2, 5),
           blurRadius: 4,
-          color: Colors.black.withOpacity(0.25))
+          color: Colors.black.withOpacity(0.5))
     ]);
   }
 

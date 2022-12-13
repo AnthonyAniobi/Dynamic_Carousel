@@ -1,6 +1,7 @@
 import 'package:dynamic_carousel/src/carousel_item_widget.dart';
 import 'package:dynamic_carousel/src/enums.dart';
 import 'package:dynamic_carousel/src/models.dart';
+import 'package:dynamic_carousel/src/slider_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 
@@ -14,7 +15,8 @@ class DynamicCarousel extends StatefulWidget {
     this.smallItemHeight = 100,
     this.smallItemWidth = 100,
     this.verticalAlignment = 0.7,
-    this.afterOffset = 32,
+    this.afterOffset = 33,
+    required this.onDelete,
     required this.children,
   });
 
@@ -42,6 +44,9 @@ class DynamicCarousel extends StatefulWidget {
   /// after offset [remove this later]
   final double afterOffset;
 
+  /// function for deleting a carousel item
+  final Function(int) onDelete;
+
   /// list of widgets for the widget
   final List<Widget> children;
 
@@ -61,22 +66,33 @@ class _DynamicCarouselState extends State<DynamicCarousel>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onHorizontalDragEnd: ((details) {
-        if (details.velocity.pixelsPerSecond.dx > 0) {
-          _leftSwipe();
-        } else {
-          _rightSwipe();
-        }
-      }),
-      child: Container(
-        width: widget.width,
-        height: widget.height,
-        color: Colors.grey,
-        child: Stack(
-          children: stackItems(),
+    if (widget.children.length == 1) activePage = 0;
+    return Column(
+      children: [
+        GestureDetector(
+          onHorizontalDragEnd: ((details) {
+            if (details.velocity.pixelsPerSecond.dx > 0) {
+              _leftSwipe();
+            } else {
+              _rightSwipe();
+            }
+          }),
+          child: SizedBox(
+            width: widget.width,
+            height: widget.height + 20,
+            child: Stack(
+              children: stackItems(),
+            ),
+          ),
         ),
-      ),
+        if (widget.children.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: SliderWidget(
+                position: (activePage) / widget.children.length,
+                amount: widget.children.length),
+          ),
+      ],
     );
   }
 
@@ -113,6 +129,12 @@ class _DynamicCarouselState extends State<DynamicCarousel>
         smallItemHeight: widget.smallItemHeight,
         afterOffset: widget.afterOffset,
         verticalOffset: widget.verticalAlignment,
+        onDelete: () {
+          widget.onDelete(index);
+          if (activePage >= widget.children.length - 1) {
+            activePage = widget.children.length - 1;
+          }
+        },
         child: currentItem,
       );
     }).toList();
