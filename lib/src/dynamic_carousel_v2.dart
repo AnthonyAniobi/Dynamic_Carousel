@@ -85,7 +85,7 @@ class _DynamicCarouselState extends State<DynamicCarousel>
             ),
           ),
         ),
-        if (widget.children.isNotEmpty)
+        if (widget.children.length > 1)
           Padding(
             padding: const EdgeInsets.only(top: 20),
             child: SliderWidget(

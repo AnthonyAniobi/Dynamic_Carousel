@@ -52,36 +52,35 @@ class CarouselItemWidget extends StatelessWidget {
           borderRadius: currentPos.isAfter || currentPos.isFarAfter
               ? const BorderRadius.horizontal(right: Radius.circular(8))
               : BorderRadius.circular(8),
-          child: child,
-          // child: Stack(
-          //   children: [
-          //     child,
-          //     if (currentPos.isCurrent)
-          //       Align(
-          //         alignment: deleteAlign ?? const Alignment(0.8, 0.8),
-          //         child: InkWell(
-          //           onTap: () {
-          //             if (onDelete != null) {
-          //               onDelete!();
-          //             }
-          //           },
-          //           child: Container(
-          //             padding: const EdgeInsets.all(4),
-          //             decoration: const BoxDecoration(
-          //               shape: BoxShape.circle,
-          //               color: Colors.orange,
-          //             ),
-          //             child: deleteIcon ??
-          //                 const Icon(
-          //                   Icons.delete,
-          //                   color: Colors.white,
-          //                   size: 23,
-          //                 ),
-          //           ),
-          //         ),
-          //       ),
-          //   ],
-          // ),
+          child: Stack(
+            children: [
+              child,
+              if (currentPos.isCurrent)
+                Align(
+                  alignment: deleteAlign ?? const Alignment(0.8, 0.8),
+                  child: InkWell(
+                    onTap: () {
+                      if (onDelete != null) {
+                        onDelete!();
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.orange,
+                      ),
+                      child: deleteIcon ??
+                          const Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                            size: 23,
+                          ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
