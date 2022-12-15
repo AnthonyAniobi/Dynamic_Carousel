@@ -15,20 +15,44 @@ TODO: List what your package can do. Maybe include images, gifs, or videos.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add the package to the `yaml` file.
+```yaml
+dynamic_carousel: latestversion
+```
+
+Import the package to your widget tree before using it
+```dart
+import 'package:dynamic_carousel/dynamic_carousel.dart';
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+**NB** this package is still in production and so is the documentation
 
 ```dart
-const like = 'sample';
+List<Widget> carouselItems = [
+    Container(
+        width: double.maxFinite,
+        height: double.maxFinite,
+        color: Colors.green,
+    ),
+    Container(
+        width: double.maxFinite,
+        height: double.maxFinite,
+        color: Colors.blue,
+    ),
+];
+
+
+DynamicCarousel(
+    animationDuration: Duration(milliseconds: 250),
+    onDelete: (index) {
+        carouselItems.removeAt(index);
+    },
+    children: carouselItems,
+),
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+Contribute to the widget on [Github](https://github.com/AnthonyAniobi/Dynamic_Carousel).
