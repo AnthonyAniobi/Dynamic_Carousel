@@ -48,6 +48,10 @@ class _DynamicCarouselState extends State<DynamicCarousel>
   void initState() {
     super.initState();
 
+    // set the active page
+    activePage = widget.children.length - 1;
+    previousPage = activePage - 1;
+
     // check if trackbar properties is null
     if (widget.trackBarProperties != null) {
       trackProperties = widget.trackBarProperties!;
@@ -120,6 +124,7 @@ class _DynamicCarouselState extends State<DynamicCarousel>
         .reversed
         .map((e) => CarouselData(e, PagePos.farAfter))
         .toList();
+
     CarouselData currentPage =
         CarouselData(widget.children[activePage], PagePos.current);
 
