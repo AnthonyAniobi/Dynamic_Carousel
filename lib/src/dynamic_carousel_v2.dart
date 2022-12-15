@@ -113,7 +113,7 @@ class _DynamicCarouselState extends State<DynamicCarousel>
       } else {
         pos = PagePos.farFarAfter;
       }
-      return CarouselData(item, pos, pos);
+      return CarouselData(item, pos);
     }).toList();
 
     return result.mapIndexed((index, item) {

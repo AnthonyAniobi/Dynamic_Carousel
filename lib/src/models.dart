@@ -6,15 +6,26 @@ class Data {}
 class CarouselData {
   final Widget item;
   PagePos currentPos;
-  PagePos previousPos;
 
-  CarouselData(this.item, this.currentPos, this.previousPos);
+  CarouselData(this.item, this.currentPos);
 
   void setCurrent(PagePos pos) {
     currentPos = pos;
   }
+}
 
-  void setPrev(PagePos pos) {
-    previousPos = pos;
-  }
+class TrackBarProperties {
+  final Color trackbarColor;
+  final Color sliderColor;
+  final double sliderHeight;
+  final double trackbarLength;
+  final double topSpacing;
+
+  TrackBarProperties({
+    required this.trackbarColor,
+    required this.sliderColor,
+    this.sliderHeight = 8,
+    this.trackbarLength = 100,
+    required this.topSpacing,
+  });
 }

@@ -1,141 +1,168 @@
+import 'package:dynamic_carousel/src/carousel_item.dart';
+import 'package:dynamic_carousel/src/carousel_slider.dart';
 import 'package:dynamic_carousel/src/enums.dart';
+import 'package:dynamic_carousel/src/models.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 
 class DynamicCarousel extends StatefulWidget {
-  const DynamicCarousel({super.key});
+  DynamicCarousel({
+    super.key,
+    this.width = double.maxFinite,
+    this.height = 200,
+    this.bigItemHeight = 200,
+    this.bigItemWidth = 200,
+    this.smallItemWidth = 100,
+    this.smallItemHeight = 100,
+    this.trackBarProperties,
+    this.animationDuration,
+    required this.onDelete,
+    required this.children,
+  });
+
+  final double width;
+  final double height;
+  final double bigItemHeight;
+  final double bigItemWidth;
+  final double smallItemWidth;
+  final double smallItemHeight;
+  final TrackBarProperties? trackBarProperties;
+  final Duration? animationDuration;
+  final Function(int) onDelete;
+  List<Widget> children;
 
   @override
   State<DynamicCarousel> createState() => _DynamicCarouselState();
 }
 
-class _DynamicCarouselState extends State<DynamicCarousel> {
-  double? width = double.maxFinite;
-  double? height = 200;
-  double? bigItemHeight = 200;
-  double? bigItemWidth = 200;
-  double? smallItemHeight = 100;
-  double? smallItemWidth = 100;
+class _DynamicCarouselState extends State<DynamicCarousel>
+    with SingleTickerProviderStateMixin {
   int activePage = 1;
-  Duration animationDuration = const Duration(milliseconds: 250);
+  int previousPage = 0;
+  Duration animationDuration = const Duration(milliseconds: 700);
+  late AnimationController controller;
+  TrackBarProperties trackProperties = TrackBarProperties(
+      trackbarColor: Colors.orange, sliderColor: Colors.grey, topSpacing: 20);
 
-  List<Widget> carouselItems = [
-    Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      color: Colors.yellow,
-    ),
-    Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      color: Colors.green,
-    ),
-    Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      color: Colors.blue,
-    ),
-    Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      color: Colors.orange,
-    )
-  ];
+  @override
+  void initState() {
+    super.initState();
+
+    // check if trackbar properties is null
+    if (widget.trackBarProperties != null) {
+      trackProperties = widget.trackBarProperties!;
+    }
+    if (widget.animationDuration != null) {
+      animationDuration = widget.animationDuration!;
+    }
+
+    // intitialize the animation
+    controller = AnimationController(vsync: this, duration: animationDuration);
+    controller.addListener(() {
+      setState(() {});
+    });
+    controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        controller.reset();
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant DynamicCarousel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    activePage = widget.children.length - 1;
+    previousPage = activePage - 1;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onHorizontalDragEnd: ((details) {
-        if (details.velocity.pixelsPerSecond.dx > 0) {
-          _rightSwipe();
-        } else {
-          _leftSwipe();
-        }
-      }),
-      child: Container(
-        width: double.maxFinite,
-        height: height,
-        color: Colors.grey,
-        child: Stack(
-          children: stackItems(),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          onHorizontalDragEnd: ((details) {
+            if (details.velocity.pixelsPerSecond.dx > 0) {
+              _leftSwipe();
+            } else {
+              _rightSwipe();
+            }
+          }),
+          child: SizedBox(
+            width: double.maxFinite,
+            height: widget.height,
+            child: Stack(
+              children: widget.children.isNotEmpty ? stackItems() : [],
+            ),
+          ),
         ),
-      ),
+        if (widget.children.length > 1)
+          Padding(
+            padding: EdgeInsets.only(top: trackProperties.topSpacing),
+            child: CarouselSlider(
+              position: activePage,
+              amount: widget.children.length,
+              properties: trackProperties,
+            ),
+          )
+      ],
     );
   }
 
   List<Widget> stackItems() {
-    // List<Map<PagePos, Widget>> beforeActive = carouselItems
-    //     .sublist(0, activePage)
-    //     .map((e) => {PagePos.before: e})
-    //     .toList();
-    // List<Map<PagePos, Widget>> afterActive = carouselItems
-    //     .sublist(activePage + 1, carouselItems.length)
-    //     .reversed
-    //     .map((e) => {PagePos.after: e})
-    //     .toList();
-    // Map<PagePos, Widget> currentPage = {
-    //   PagePos.current: carouselItems[activePage]
-    // };
-    // List<Map<PagePos, Widget>> currentItemList = [
-    //   ...beforeActive,
-    //   ...afterActive,
-    //   currentPage,
-    // ];
-    List<Map<PagePos, Widget>> currentItemList =
-        carouselItems.mapIndexed((index, element) {
-      PagePos pagePos;
-      if (index < activePage - 1) {
-        pagePos = PagePos.farBefore;
-      } else if (index == activePage - 1) {
-        pagePos = PagePos.before;
-      } else if (index == activePage) {
-        pagePos = PagePos.current;
-      } else if (index == activePage + 1) {
-        pagePos = PagePos.after;
-      } else {
-        pagePos = PagePos.farAfter;
-      }
-      return {pagePos: element};
-    }).toList();
+    List<CarouselData> beforeActive = widget.children
+        .sublist(0, activePage)
+        .map((e) => CarouselData(e, PagePos.farBefore))
+        .toList();
+    List<CarouselData> afterActive = widget.children
+        .sublist(activePage + 1, widget.children.length)
+        .reversed
+        .map((e) => CarouselData(e, PagePos.farAfter))
+        .toList();
+    CarouselData currentPage =
+        CarouselData(widget.children[activePage], PagePos.current);
+
+    if (afterActive.isNotEmpty) {
+      afterActive.last.setCurrent(PagePos.after);
+    }
+
+    if (beforeActive.isNotEmpty) {
+      beforeActive.last.setCurrent(PagePos.before);
+    }
+
+    List<CarouselData> currentItemList = [
+      ...beforeActive,
+      ...afterActive,
+      currentPage,
+    ];
     return currentItemList.mapIndexed((index, item) {
-      PagePos currentPos = item.keys.first;
-      Widget currentItem = item.values.first;
-      return AnimatedAlign(
-        duration: animationDuration,
-        alignment: currentPos.isBefore
-            ? Alignment(0.75, 0)
-            : currentPos.isCurrent
-                ? Alignment(0, 0)
-                : currentPos.isAfter
-                    ? Alignment(-0.75, 0)
-                    : currentPos.isFarBefore
-                        ? Alignment(1, 0)
-                        : Alignment(-1, 0),
-        child: AnimatedContainer(
-          duration: animationDuration,
-          width: currentPos.isCurrent
-              ? bigItemWidth
-              : currentPos.isFar
-                  ? smallItemHeight! - 15
-                  : smallItemWidth,
-          height: currentPos.isCurrent
-              ? bigItemHeight
-              : currentPos.isFar
-                  ? smallItemWidth! - 15
-                  : smallItemHeight,
-          child: SizedBox(
-              width: currentPos.isCurrent ? null : smallItemWidth,
-              height: currentPos.isCurrent ? null : smallItemHeight,
-              child: currentItem),
-        ),
-      );
+      return CarouselItem(
+          bigItemWidth: widget.bigItemWidth,
+          bigItemHeight: widget.bigItemHeight,
+          smallItemWidth: widget.smallItemWidth,
+          smallItemHeight: widget.smallItemHeight,
+          animation: 1 - controller.value,
+          forward: activePage > previousPage,
+          startAnimating: controller.isAnimating,
+          onDelete: () {
+            setState(() {
+              widget.onDelete(activePage);
+              if (activePage >= widget.children.length - 1) {
+                activePage = widget.children.length - 1;
+              }
+            });
+          },
+          data: item);
     }).toList();
   }
 
   void _rightSwipe() {
     setState(() {
-      if (activePage < carouselItems.length - 1) {
+      if (activePage < widget.children.length - 1) {
+        previousPage = activePage;
         activePage += 1;
+        controller.forward();
       }
     });
   }
@@ -143,7 +170,9 @@ class _DynamicCarouselState extends State<DynamicCarousel> {
   void _leftSwipe() {
     setState(() {
       if (activePage > 0) {
+        previousPage = activePage;
         activePage -= 1;
+        controller.forward();
       }
     });
   }
