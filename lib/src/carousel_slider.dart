@@ -22,7 +22,7 @@ class CarouselSlider extends StatelessWidget {
       width: properties.trackbarLength,
       height: properties.sliderHeight,
       decoration: BoxDecoration(
-        color: properties.trackbarColor,
+        color: properties.sliderColor,
         borderRadius: BorderRadius.circular(properties.sliderHeight / 2),
       ),
       child: Stack(
@@ -32,11 +32,12 @@ class CarouselSlider extends StatelessWidget {
             top: 0,
             bottom: 0,
             left: position * sliderLength,
+            // left: xPos,
             child: Container(
               width: sliderLength,
               height: properties.sliderHeight,
               decoration: BoxDecoration(
-                color: properties.sliderColor,
+                color: properties.trackbarColor,
                 borderRadius:
                     BorderRadius.circular(properties.sliderHeight / 2),
               ),
@@ -54,5 +55,6 @@ class CarouselSlider extends StatelessWidget {
     }
     freeLength = (freeLength * position) / freeLength;
     return -0.9 + (2 * freeLength);
+    // return 12;
   }
 }
