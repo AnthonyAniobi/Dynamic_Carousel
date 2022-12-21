@@ -16,11 +16,3 @@ extension PositionHelper on PagePos {
   bool get isFarFarAfter => this == PagePos.farFarAfter;
   bool get isFar => this == PagePos.farAfter || this == PagePos.farBefore;
 }
-
-enum SlideDirection { forward, backward, none }
-
-extension SlideDirectionHelper on SlideDirection {
-  bool get isForward => this == SlideDirection.forward;
-  bool get isBackward => this == SlideDirection.backward;
-  bool get isStatic => this == SlideDirection.none;
-}

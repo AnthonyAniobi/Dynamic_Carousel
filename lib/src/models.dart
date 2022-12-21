@@ -15,14 +15,31 @@ class CarouselData {
 }
 
 class TrackBarProperties {
+  /// color of trackbar background
+  ///
+  /// default color is transparent
   final Color trackbarColor;
+
+  /// The color of the slider
+  ///
+  /// this is required
   final Color sliderColor;
+
+  /// Set the vertical height of the carousel slider
+  ///
+  /// the default height is 8pixels
   final double sliderHeight;
+
+  /// set the horizontal length of the carousel slider
+  ///
+  /// the default lenght is 100 pixels
   final double trackbarLength;
+
+  /// the spacing between the carousel and the slider
   final double topSpacing;
 
   TrackBarProperties({
-    required this.trackbarColor,
+    this.trackbarColor = Colors.transparent,
     required this.sliderColor,
     this.sliderHeight = 8,
     this.trackbarLength = 100,

@@ -20,10 +20,10 @@ class CarouselSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: properties.trackbarLength,
-      height: 8,
+      height: properties.sliderHeight,
       decoration: BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.circular(4),
+        color: properties.trackbarColor,
+        borderRadius: BorderRadius.circular(properties.sliderHeight / 2),
       ),
       child: Stack(
         children: [
@@ -34,10 +34,11 @@ class CarouselSlider extends StatelessWidget {
             left: position * sliderLength,
             child: Container(
               width: sliderLength,
-              height: 8,
+              height: properties.sliderHeight,
               decoration: BoxDecoration(
-                color: Colors.orange,
-                borderRadius: BorderRadius.circular(4),
+                color: properties.sliderColor,
+                borderRadius:
+                    BorderRadius.circular(properties.sliderHeight / 2),
               ),
             ),
           ),
@@ -47,12 +48,11 @@ class CarouselSlider extends StatelessWidget {
   }
 
   double get xPos {
-    // double freeLength = trackLength - sliderLength;
-    // if (freeLength <= 1) {
-    //   return 0;
-    // }
-    // freeLength = (freeLength * position) / freeLength;
-    // return -0.9 + (2 * freeLength);
-    return 2;
+    double freeLength = properties.trackbarLength - sliderLength;
+    if (freeLength <= 1) {
+      return 0;
+    }
+    freeLength = (freeLength * position) / freeLength;
+    return -0.9 + (2 * freeLength);
   }
 }
