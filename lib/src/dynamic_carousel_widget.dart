@@ -3,7 +3,6 @@ import 'package:dynamic_carousel/src/carousel_slider.dart';
 import 'package:dynamic_carousel/src/enums.dart';
 import 'package:dynamic_carousel/src/models.dart';
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
 
 class DynamicCarousel extends StatefulWidget {
   DynamicCarousel({
@@ -141,7 +140,7 @@ class _DynamicCarouselState extends State<DynamicCarousel>
       ...afterActive,
       currentPage,
     ];
-    return currentItemList.mapIndexed((index, item) {
+    return currentItemList.map((item) {
       return CarouselItem(
           bigItemWidth: widget.bigItemWidth,
           bigItemHeight: widget.bigItemHeight,
