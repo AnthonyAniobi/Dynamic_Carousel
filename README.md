@@ -1,4 +1,4 @@
-[![pub package version](https://img.shields.io/pub/v/date_format_field)](https://pub.dev/packages/date_format_field)
+[![pub package version](https://img.shields.io/pub/v/dynamic_carousel)](https://pub.dev/packages/dynamic_carousel)
 [![license](https://img.shields.io/github/license/AnthonyAniobi/Date_Format_Field)](https://github.com/AnthonyAniobi/Dynamic_Carousel)
 [![issues](https://img.shields.io/github/issues/AnthonyAniobi/Date_Format_Field)](https://github.com/AnthonyAniobi/Dynamic_Carousel)
 
@@ -115,7 +115,6 @@ Widget build(BuildContext context){
 
 ```
 
-**NB** this package is still in production and so is the documentation
 
 
 ## Additional information
