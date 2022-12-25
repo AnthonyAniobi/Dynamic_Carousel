@@ -13,6 +13,7 @@ class CarouselItem extends StatelessWidget {
     required this.forward,
     required this.animation,
     required this.data,
+    this.onDeleteWidget,
     this.smallestFraction = 0.9,
     required this.onDelete,
   });
@@ -27,6 +28,7 @@ class CarouselItem extends StatelessWidget {
   final CarouselData data;
   final double smallestFraction;
   final Function onDelete;
+  final Widget? onDeleteWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -49,25 +51,31 @@ class CarouselItem extends StatelessWidget {
             children: [
               data.item,
               if (data.currentPos.isCurrent)
-                Align(
-                  alignment: const Alignment(0.8, 0.8),
-                  child: InkWell(
-                    onTap: () {
-                      onDelete();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.orange,
+                Positioned(
+                  bottom: 10,
+                  right: 10,
+                  child: onDeleteWidget ??
+                      SizedBox(
+                        width: 35,
+                        height: 35,
+                        child: InkWell(
+                          onTap: () {
+                            onDelete();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.orange,
+                            ),
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                              size: 23,
+                            ),
+                          ),
+                        ),
                       ),
-                      child: const Icon(
-                        Icons.delete,
-                        color: Colors.white,
-                        size: 23,
-                      ),
-                    ),
-                  ),
                 ),
             ],
           ),

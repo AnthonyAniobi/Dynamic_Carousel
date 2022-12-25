@@ -36,6 +36,21 @@ class _MyHomePageState extends State<MyHomePage> {
       height: double.maxFinite,
       color: Colors.green,
     ),
+    Container(
+      width: double.maxFinite,
+      height: double.maxFinite,
+      color: Colors.red,
+    ),
+    Container(
+      width: double.maxFinite,
+      height: double.maxFinite,
+      color: Colors.blue,
+    ),
+    Container(
+      width: double.maxFinite,
+      height: double.maxFinite,
+      color: Colors.yellow,
+    ),
   ];
 
   @override

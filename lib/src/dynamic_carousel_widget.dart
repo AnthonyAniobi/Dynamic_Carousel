@@ -15,19 +15,59 @@ class DynamicCarousel extends StatefulWidget {
     this.smallItemHeight = 100,
     this.trackBarProperties,
     this.animationDuration,
+    this.onDeleteWidget,
     required this.onDelete,
     required this.children,
   });
 
+  /// [width] of the entire carousel. If no value is provided, the carousel
+  /// assumes the maximum width of the parent widget
   final double width;
+
+  /// [height] of the entire carousel (including height of slider). The
+  /// default height of the carousel is 200 pixels
   final double height;
+
+  /// [bigItemHeight] defines the height of the item of the carousel in focus.
+  /// The default value is 200 pixels
   final double bigItemHeight;
+
+  /// [bigItemWidth] defines the widht of the item of the carousel in focus.
+  /// The default value is 200 pixels
   final double bigItemWidth;
+
+  /// [smallItemWidth] defines the width of the shrinked carousel item.
+  /// The default value is 100 pixels
   final double smallItemWidth;
+
+  /// [smallItemHeight] defines the height of the shrinked carousel item.
+  /// The default value is 100 pixels
   final double smallItemHeight;
+
+  /// [TrackBarProperties] defines the properties of the slider. The slider is
+  /// only visible when the carousel contains two or more items. The
+  /// [TrackBarProperties] specifies the [width], [height] and [color] of the
+  /// slider and background trackbar.
   final TrackBarProperties? trackBarProperties;
+
+  /// [animationDuration] specifies the [Duration] of the carousel slider
   final Duration? animationDuration;
+
+  /// [onDelete] is a callback triggered when the delete icon is clicked on
+  /// an item on the carousel.
+  ///
+  /// [onDelete] recieves an integer ([int]) which is the index of the deleted
+  /// carousel item.
   final Function(int) onDelete;
+
+  /// [onDeleteWidget] defines a new widget to replace the default delete icon
+  ///  on the carousel item.
+  ///
+  /// **Note:** overriding this method means the overriding the [onDelete]
+  /// callback.
+  final Widget? onDeleteWidget;
+
+  /// [children] is a list of widgets which are displayed in the carousel
   List<Widget> children;
 
   @override
@@ -149,6 +189,7 @@ class _DynamicCarouselState extends State<DynamicCarousel>
           animation: 1 - controller.value,
           forward: activePage > previousPage,
           startAnimating: controller.isAnimating,
+          onDeleteWidget: widget.onDeleteWidget,
           onDelete: () {
             setState(() {
               widget.onDelete(activePage);

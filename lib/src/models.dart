@@ -1,10 +1,11 @@
 import 'package:dynamic_carousel/src/enums.dart';
 import 'package:flutter/material.dart';
 
-class Data {}
-
 class CarouselData {
+  /// the carousel widget item
   final Widget item;
+
+  /// the current position of the item in the carousel
   PagePos currentPos;
 
   CarouselData(this.item, this.currentPos);

@@ -1,4 +1,4 @@
-<!-- [![pub package version](https://img.shields.io/pub/v/date_format_field)](https://pub.dev/packages/date_format_field) -->
+[![pub package version](https://img.shields.io/pub/v/date_format_field)](https://pub.dev/packages/date_format_field)
 [![license](https://img.shields.io/github/license/AnthonyAniobi/Date_Format_Field)](https://github.com/AnthonyAniobi/Dynamic_Carousel)
 [![issues](https://img.shields.io/github/issues/AnthonyAniobi/Date_Format_Field)](https://github.com/AnthonyAniobi/Dynamic_Carousel)
 
@@ -6,10 +6,10 @@ Dynamic Carousel is a flutter package that implements a manual swiping carousel.
 
 
 ## Preview
-<img src='screenshots/aim.png' width='400' height='300'>
+<img src='https://raw.githubusercontent.com/AnthonyAniobi/Dynamic_Carousel/main/screenshots/aim.png' width='400' height='300'>
 
 ## Features
-<img src='screenshots/screen_preview.gif' width='300' height='500'>
+<img src='https://raw.githubusercontent.com/AnthonyAniobi/Dynamic_Carousel/main/screenshots/screen_preview.gif' width='300' height='500'>
 
 
 ## Getting started
