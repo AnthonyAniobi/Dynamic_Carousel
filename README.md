@@ -4,34 +4,39 @@
 
 Dynamic carousel widget is a carousel with zoom animation with ability to add and remove elements dynamicaly
 
-
 ## Preview
+
 <img src='https://raw.githubusercontent.com/AnthonyAniobi/Dynamic_Carousel/main/screenshots/dynamic_carousel_preview.gif' width='400' height='300'>
 
-
 ## Features
+
 The Features of this dynamic carousel are:
+
 ### Zoom animation
-* zoom animation for expanding carousel item on focus
-* zoom animation from widgets next to focus to former widgets
+
+- zoom animation for expanding carousel item on focus
+- zoom animation from widgets next to focus to former widgets
 
 ### Scrollbar Carousel
-* Automatic adjustable scrollbar for carousel
-* Customizable scrollbar
-* Scrollbar widget shows when carousel item is above two
+
+- Automatic adjustable scrollbar for carousel
+- Customizable scrollbar
+- Scrollbar widget shows when carousel item is above two
 
 ### Delete Items
-* delete items from the carousel and have them change in realtime
 
+- delete items from the carousel and have them change in realtime
 
 ## Getting started
 
 Add the package to the `yaml` file.
+
 ```yaml
 dynamic_carousel: latestversion
 ```
 
 Import the package to your widget tree before using it
+
 ```dart
 import 'package:dynamic_carousel/dynamic_carousel.dart';
 ```
@@ -59,8 +64,8 @@ DynamicCarousel(
     children: carouselItems,
 ),
 ```
-The code above loads the carousel with default properties
 
+The code above loads the carousel with default properties
 
 ## Usage
 
@@ -115,8 +120,10 @@ Widget build(BuildContext context){
 
 ```
 
+## Support the package
 
+Have a feature you would like to see? why not lend the developers a hand 🤝
 
-## Additional information
+<a href="https://www.buymeacoffee.com/aniobi"><img src="screenshots/bmc_logo.png" height="70px"></a>
 
 Contribute to the widget on [Github](https://github.com/AnthonyAniobi/Dynamic_Carousel).

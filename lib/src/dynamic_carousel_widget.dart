@@ -4,6 +4,7 @@ import 'package:dynamic_carousel/src/enums.dart';
 import 'package:dynamic_carousel/src/models.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class DynamicCarousel extends StatefulWidget {
   DynamicCarousel({
     super.key,

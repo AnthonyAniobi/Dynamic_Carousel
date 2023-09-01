@@ -1,6 +1,7 @@
 import 'package:dynamic_carousel/src/models.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class CarouselSlider extends StatelessWidget {
   final int amount;
   final int position;
